@@ -1,0 +1,26 @@
+version: '3.7'
+
+# docker run -p 9000:9000 lmenezes/cerebro:0.9.2
+
+services: 
+
+  cerebro: 
+    image: lmenezes/cerebro:0.9.2
+    container_name: cerebro
+    restart: always
+    hostname: cerebro
+    ports:
+      - 9000:9000
+    environment:
+      TZ: Asia/Shanghai
+    networks: 
+      - swarm_net 
+    command: 
+#      - -Dhosts.0.host=http://elasticsearch_node1:9200
+# 这里填ES的默认地址，不填也可以
+      - -Dhosts.0.host=http://192.168.0.110:9200
+
+networks: 
+  swarm_net: 
+    external: true
+  

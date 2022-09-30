@@ -1,0 +1,78 @@
+version: '3.7'
+
+# http://ip:8070 apollo admin
+
+services:
+  apollo-all-in-one:
+    container_name: apollo-all-in-one
+    image: idoop/docker-apollo:1.4.0
+    restart: always
+    #  如果portal出现504错误，则使用"host"模式
+    # network_mode: "host"
+    ports: 
+      - 8070:8070
+      - 8080:8080
+      - 8081:8081
+      - 8082:8082
+      - 8083:8083
+      - 8090:8090
+      - 8091:8091
+      - 8092:8092
+      - 8093:8093
+    environment:
+      TZ: Asia/Shanghai
+
+      # 开启Potal,默认端口:8070
+      # 配置数据库ServerConfig表apollo.portal.envs字段值为要开启的环境，这里是：dev,fat,uat
+      PORTAL_DB: jdbc:mysql://apollo-db:3306/ApolloPortalDB?characterEncoding=utf8
+      PORTAL_DB_USER: root
+      PORTAL_DB_PWD: apollo_123456
+
+      # 开启Dev环境，默认端口Admin:8090,Config:8080
+      # 配置数据库ServerConfig表eureka.service.url字段值为http://localhost:8080/eureka/
+      DEV_DB: jdbc:mysql://apollo-db:3306/ApolloConfigDB?characterEncoding=utf8
+      DEV_DB_USER: root
+      DEV_DB_PWD: apollo_123456
+
+      # 开启Fat环境，默认端口Admin:8091,Config:8081
+      # 配置数据库ServerConfig表eureka.service.url字段值为http://localhost:8081/eureka/
+      # FAT_DB: jdbc:mysql://10.0.0.8:3306/ApolloConfigDBFat?characterEncoding=utf8
+      # FAT_DB_USER: root
+      # FAT_DB_PWD: password
+     
+      # 开启Uat环境，如果网络模式为host则可以自定义一下Uat环境的端口
+      # 下方配置config端口为1000,则配置数据库ServerConfig表eureka.service.url字段值为http://localhost:1000/eureka/
+      # UAT_DB: jdbc:mysql://10.0.0.8:3306/ApolloConfigDBUat?characterEncoding=utf8
+      # UAT_DB_USER: root
+      # UAT_DB_PWD: password
+      # UAT_ADMIN_PORT: 2000
+      # UAT_CONFIG_PORT: 1000
+      # 如果需要,还可以配置Pro环境
+    networks: 
+      - swarm_net
+    depends_on: ['apollo-db']
+
+  apollo-db:
+    image: mysql:5.7
+    container_name: apollo-db
+    restart: always
+    ports: 
+      - 3306:3306
+    # network_mode: "host"
+    environment:
+      TZ: Asia/Shanghai
+      # MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: apollo_123456
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - /etc/apollo/sql:/docker-entrypoint-initdb.d
+      - apollo_mysqldb:/var/lib/mysql
+    networks: 
+      - swarm_net
+
+volumes:
+  apollo_mysqldb: 
+
+networks: 
+  swarm_net: 
+    external: true 

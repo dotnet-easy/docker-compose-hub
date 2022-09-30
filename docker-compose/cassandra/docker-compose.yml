@@ -1,0 +1,50 @@
+version: '3.7'
+
+# 3 node cluster
+# If you see exit code 137 (OOM killer) then ensure Docker has access to more resources
+services:
+
+  cassandra1:
+    image: cassandra:3.11.4
+    container_name: cassandra1
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - 9042:9042   # Native transport
+      - 7199:7199   # JMX
+      - 9160:9160   # Thrift clients
+    networks: 
+      - swarm_net
+
+  cassandra2:
+    image: cassandra:3.11.4
+    container_name: cassandra2
+    restart: always
+    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 30 && /docker-entrypoint.sh cassandra -f"
+    environment:
+      TZ: Asia/Shanghai
+      CASSANDRA_SEEDS: cassandra1
+    depends_on:
+      - "cassandra1"
+    networks: 
+      - swarm_net
+
+  # you cannot have multiple nodes join the cluster at the same time when
+  # cassandra.consistent.rangemovement is true so we further delay it to give it time to stabilize
+  cassandra3:
+    image: cassandra:3.11.4
+    container_name: cassandra3
+    restart: always
+    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 80 && /docker-entrypoint.sh cassandra -f"
+    environment:
+      TZ: Asia/Shanghai
+      CASSANDRA_SEEDS: cassandra1
+    depends_on:
+      - "cassandra1"
+    networks: 
+      - swarm_net
+
+networks: 
+  swarm_net: 
+    external: true 

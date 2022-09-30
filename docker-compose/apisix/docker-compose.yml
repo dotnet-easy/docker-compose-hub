@@ -1,0 +1,56 @@
+
+version: '3.7'
+services: 
+  apisix-dashboard:
+    image: apache/apisix-dashboard:2.13-alpine
+    container_name: apisix-dashboard
+    restart: always
+    volumes:
+    - /etc/apisix/dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    ports:
+    - "9000:9000"
+    networks:
+      - swarm_net
+
+  apisix:
+    image: apache/apisix:2.15.0-alpine
+    container_name: apisix
+    restart: always
+    volumes:
+      - apisix_log:/usr/local/apisix/logs
+      - /etc/apisix/apisix_conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    depends_on:
+      - etcd
+    ##network_mode: host
+    ports:
+      - "9080:9080/tcp"
+      - "9091:9091/tcp"
+      - "9443:9443/tcp"
+      - "9092:9092/tcp"
+    networks:
+      - swarm_net
+
+  etcd:
+    image: bitnami/etcd:3.4.14
+    container_name: etcd
+    restart: always
+    volumes:
+      - etcd:/bitnami/etcd
+    environment:
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://0.0.0.0:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    ports:
+      - "2379:2379/tcp"
+    networks: 
+      - swarm_net
+
+volumes: 
+  apisix_log: 
+  etcd: 
+
+networks: 
+  swarm_net: 
+    external: true
+

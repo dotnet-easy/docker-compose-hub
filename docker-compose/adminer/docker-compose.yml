@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+
+  adminer:
+    image: adminer:4.7.1
+    container_name: adminer
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    ports:
+      - 8080:8080
+    networks: 
+      - swarm_net
+
+
+networks: 
+  swarm_net: 
+    external: true 

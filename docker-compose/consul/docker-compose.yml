@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  consul:
+    image: consul:1.5
+    container_name: consul
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    volumes: 
+      - consul_data:/consul/data
+    ports:
+      - 8500:8500
+    networks:
+      - swarm_net
+
+volumes: 
+  consul_data: 
+
+networks:
+  swarm_net: 
+    external: true

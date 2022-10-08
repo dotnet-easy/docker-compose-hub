@@ -1,0 +1,70 @@
+version: '3.7'
+
+services:
+  consul1:
+    image: consul:1.5
+    container_name: consul1
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    volumes: 
+      - consul_data1:/consul/data
+      - /etc/consul/watchs.json:/consul/config/watchs.json
+    command: agent -server -bootstrap-expect=3 -node=consul1 -bind '{{ GetPrivateInterfaces  | attr "address" }}' -client=0.0.0.0 -datacenter=dc1
+    networks:
+      - swarm_net
+
+  consul2:
+    image: consul:1.5
+    container_name: consul2
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    volumes: 
+      - consul_data2:/consul/data
+    command: agent -server -retry-join=consul1 -node=consul2 -bind '{{ GetPrivateInterfaces | attr "address" }}' -client=0.0.0.0 -datacenter=dc1
+    depends_on:
+        - consul1
+    networks:
+      - swarm_net
+
+  consul3:
+    image: consul:1.5
+    container_name: consul3
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    volumes: 
+      - consul_data3:/consul/data
+    command: agent -server -retry-join=consul1 -node=consul3 -bind '{{ GetPrivateInterfaces | attr "address" }}' -client=0.0.0.0 -datacenter=dc1
+    depends_on:
+        - consul1
+    networks:
+      - swarm_net
+
+  consul4:
+    image: consul:1.5
+    container_name: consul4
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    volumes: 
+      - consul_data4:/consul/data
+    command: agent -retry-join=consul1 -node=consul4 -bind '{{ GetPrivateInterfaces | attr "address" }}' -client=0.0.0.0 -datacenter=dc1 -ui 
+    ports:
+      - 8500:8500
+    depends_on:
+        - consul2
+        - consul3
+    networks:
+      - swarm_net
+
+volumes: 
+  consul_data1: 
+  consul_data2: 
+  consul_data3: 
+  consul_data4: 
+
+networks:
+  swarm_net: 
+    external: true

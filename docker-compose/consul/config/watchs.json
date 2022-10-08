@@ -1,0 +1,12 @@
+{
+    "watches": [{
+        "type": "checks",
+        "handler_type": "http",
+        "state": "critical",
+        "http_handler_config": {
+            "path": "http://192.168.103.204:5000/api/Email/Notice",
+            "method": "POST",
+            "timeout": "60s"
+        }
+    }]
+}

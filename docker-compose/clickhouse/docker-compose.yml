@@ -1,0 +1,41 @@
+version: '3.7'
+
+services: 
+
+  clickhouseserver: 
+    image: yandex/clickhouse-server:21
+    container_name: clickhouseserver
+    restart: always
+    hostname: clickhouse
+    volumes: 
+      - data:/var/lib/clickhouse
+      - /etc/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - /etc/clickhouse/users.xml:/etc/clickhouse-server/users.xml
+    ports:
+      - 8123:8123
+      - 9000:9000
+    environment:
+      TZ: Asia/Shanghai
+    networks: 
+      - swarm_net   
+  
+  # clickhouseclient:
+  #   image: yandex/clickhouse-client:21
+  #   container_name: clickhouseclient
+  #   restart: always
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #   depends_on: ['clickhouseserver']
+  #   networks: 
+  #     - swarm_net 
+
+  #docker run -it --rm --link clickhouseserver --net swarm_net yandex/clickhouse-client:21 --host clickhouseserver
+
+volumes: 
+  data: 
+    driver: local
+
+networks: 
+  swarm_net: 
+    external: true
+  

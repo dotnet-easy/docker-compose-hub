@@ -1,0 +1,39 @@
+
+version: '3.7'
+services: 
+  emqx: 
+    #image: emqx/emqx:v3.2.0
+    image: emqx/emqx:4.4.4
+    container_name: emqx
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    ports: 
+      - 1883:1883 
+      - 8083:8083
+      - 8883:8883
+      - 8084:8084
+      - 18083:18083
+      - 11883:11883
+      - 4369:4369
+      - 5369:5369
+      - 6369:6369
+      - 8080:8080
+    volumes: 
+      - emqx_data:/opt/emqx/data
+      - emqx_etc:/opt/emqx/etc
+      - emqx_lib:/opt/emqx/lib
+      - emqx_log:/opt/emqx/log
+    networks: 
+      - swarm_net
+
+volumes: 
+  emqx_data: 
+  emqx_etc: 
+  emqx_lib: 
+  emqx_log: 
+
+networks: 
+  swarm_net: 
+    external: true
+

@@ -1,0 +1,19 @@
+version: '3.7'
+
+services: 
+
+  easymock: 
+    image: jptx1234/easy-mock-all-in-one
+    container_name: easymock
+    restart: always
+    ports:
+      - 7300:7300
+    environment:
+      TZ: Asia/Shanghai
+    networks: 
+      - swarm_net 
+
+networks: 
+  swarm_net: 
+    external: true
+  

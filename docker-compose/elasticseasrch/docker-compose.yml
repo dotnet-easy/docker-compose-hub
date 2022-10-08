@@ -1,0 +1,49 @@
+version: '3.7'
+
+services: 
+
+  elasticsearch: 
+    image: elasticsearch:6.8.1
+    container_name: elasticsearch
+    restart: always
+    hostname: elasticsearch
+    volumes: 
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - "TZ=Asia/Shanghai"
+      # 设置宿主机内存大小
+      - "ES_JAVA_OPTS=-Xms6g -Xmx6g"
+    networks: 
+      - swarm_net 
+    deploy:
+      resources:
+        limits:
+          #cpus: '2'
+          memory: 6G      
+  
+  kibana:
+    image: kibana:6.8.1
+    container_name: kibana
+    restart: always
+    ports:
+      - 5601:5601
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      TZ: Asia/Shanghai
+    depends_on: ['elasticsearch']
+    networks: 
+      - swarm_net 
+
+volumes: 
+  es_data: 
+    driver: local
+
+networks: 
+  swarm_net: 
+    external: true
+  

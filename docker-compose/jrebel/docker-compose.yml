@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  jrebel:
+    image: nn200433/jrebel
+    container_name: jrebel
+    privileged: true
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      PORT: 9001
+    ports:
+      - 9001:9001
+    networks:
+      - swarm_net
+
+networks:
+  swarm_net: 
+    external: true

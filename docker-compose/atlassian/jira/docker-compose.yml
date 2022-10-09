@@ -1,0 +1,31 @@
+version: '3.7'
+
+services: 
+
+  jira:
+    image: jira-software:8.8.1
+    container_name: jira
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai
+    ports:
+      - 8080:8080
+    networks: 
+      - swarm_net
+    volumes:
+      - data:/var/atlassian/jira
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+volumes:
+  data: 
+
+networks: 
+  swarm_net: 
+    external: true
+
+# docker-compose up -d
+# docker-compose down

@@ -1,0 +1,40 @@
+version: '3.7'
+
+# docker run --name flink_jobmanager -d -t flink jobmanager
+# docker run --name flink_taskmanager -d -t flink taskmanager
+
+services: 
+
+  jobmanager:
+    image: flink:1.15.2
+    expose:
+      - "6123"
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - TZ=Asia/Shanghai
+    networks: 
+      - swarm_net 
+
+  taskmanager:
+    image: flink:1.15.2
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    links:
+      - "jobmanager:jobmanager"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - TZ=Asia/Shanghai
+    networks: 
+      - swarm_net 
+
+networks: 
+  swarm_net: 
+    external: true
+  

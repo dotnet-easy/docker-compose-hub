@@ -1,0 +1,39 @@
+version: '3.7'
+
+services: 
+
+  mysql8: 
+    image: mysql:8.0.16
+    container_name: mysql8
+    command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+    restart: always
+    ports: 
+      - 3306:3306
+    environment: 
+      - MYSQL_ROOT_PASSWORD=Mysql123$
+      - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Shanghai
+    volumes: 
+      - /etc/mysql/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /etc/mysql/my.cnf:/etc/mysql/my.cnf
+      - mysql_data:/var/lib/mysql
+    networks: 
+      - swarm_net
+
+  phpmyadmin: 
+    image: phpmyadmin:5
+    container_name: phpmyadmin
+    restart: always
+    ports: 
+      - 80:80
+    environment: 
+      - PMA_ARBITRARY=1
+    networks: 
+      - swarm_net
+
+volumes: 
+  mysql_data: 
+
+networks: 
+  swarm_net: 
+    external: true 

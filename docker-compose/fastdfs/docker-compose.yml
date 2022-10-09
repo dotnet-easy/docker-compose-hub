@@ -1,0 +1,27 @@
+
+version: '3.7'
+services: 
+  tracker:
+    image: delron/fastdfs
+    container_name: tracker
+    network_mode: "host"
+    volumes:
+      - tracker_data:/var/fdfs
+    command: tracker
+  storage:
+    image: delron/fastdfs
+    container_name: storage
+    network_mode: "host"
+    volumes:
+      - storage_data:/var/fdfs
+    environment:
+      - TRACKER_SERVER=192.168.23.134:22122
+      - GROUP_NAME=group1 
+    command: storage
+    depends_on:
+      - tracker
+
+volumes: 
+  tracker_data: 
+  storage_data: 
+

@@ -1,0 +1,26 @@
+version: '3.7'
+
+services: 
+  mariadb: 
+    image: mariadb:10.6.4
+    container_name: mariadb
+    # command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+    restart: always
+    ports: 
+      - 3306:3306
+    environment: 
+      - MYSQL_ROOT_PASSWORD=Mysql123$
+      # - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Shanghai
+    volumes: 
+      - mysql_data:/var/lib/mysql
+      - "/etc/mysql/my.cnf:/etc/mysql/my.cnf"
+    networks: 
+      - swarm_net
+
+volumes: 
+  mysql_data: 
+
+networks: 
+  swarm_net: 
+    external: true 

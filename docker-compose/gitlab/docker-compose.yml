@@ -1,0 +1,54 @@
+version: '3.7'
+services: 
+  gitlab:
+    container_name: gitlab
+    image: 'gitlab/gitlab-ce:15.2.2-ce.0'
+    restart: always
+    hostname: '10.142.51.100'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://10.142.51.100:1230'
+        gitlab_rails['gitlab_shell_ssh_port'] = 1232
+        gitlab_rails['time_zone'] = 'Asia/Shanghai'
+        gitlab_rails['gitlab_email_enabled'] = true
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = "smtp.163.com"
+        gitlab_rails['smtp_port'] = 465
+        gitlab_rails['smtp_user_name'] = "ego_it@163.com"
+        gitlab_rails['smtp_password'] = "xxxxx"
+        gitlab_rails['smtp_domain'] = "163.com"
+        gitlab_rails['smtp_authentication'] = "login"
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        gitlab_rails['smtp_tls'] = true
+        gitlab_rails['gitlab_email_from'] = 'ego_it@163.com'
+        gitlab_rails['initial_root_password'] = 'Gitlab123$'
+    ports:
+      - '1230:1230'
+      - '1231:443'
+      - '1232:22'
+    volumes:
+      - 'gitlab_data:/etc/gitlab'
+      - 'gitlab_log_data:/var/log/gitlab'
+      - 'gitlab_opt_data:/var/opt/gitlab'
+    networks: 
+      - swarm_net 
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 4G
+        reservations:
+           cpus: '0.5'
+           memory: 200M 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "3"
+volumes: 
+  gitlab_data: 
+  gitlab_log_data:
+  gitlab_opt_data:
+networks: 
+  swarm_net: 
+    external: true 

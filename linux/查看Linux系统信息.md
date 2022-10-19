@@ -8,7 +8,7 @@ curl -Lso- bench.sh | bash
 
 或者
 
-```
+```shell
 wget -qO- bench.sh | bash
 ```
 

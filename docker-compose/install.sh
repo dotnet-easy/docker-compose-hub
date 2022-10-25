@@ -109,7 +109,12 @@ after_install() {
     mkdir -p /etc/docker
     tee /etc/docker/daemon.json <<-'EOF'
 {
-  "registry-mirrors": ["https://y0ovxpv6.mirror.aliyuncs.com"]
+  "registry-mirrors": ["https://y0ovxpv6.mirror.aliyuncs.com"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "500m",
+    "max-file": "3"
+  }
 }
 EOF
     systemctl daemon-reload

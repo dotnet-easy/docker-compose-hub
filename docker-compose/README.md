@@ -11,3 +11,8 @@ docker swarm init
 docker network create --driver=overlay --attachable swarm_net
 ```
 
+> install.sh 一键安装 docker docker-compose 基本上能支持的操作全支持了
+```shell
+chmod -R 777 install.sh 
+sh install.sh
+```

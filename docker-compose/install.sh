@@ -146,6 +146,7 @@ print() {
     echo -e '##  Docker 安装完成 ...'
     echo -e "## $(docker -v)"
     echo -e "## $(docker-compose -v)"
+    echo -e "## New $(docker compose version) Doc(https://docs.docker.com/compose/compose-v2/)"    
     echo -e "## network : $(docker network list | grep swarm_net)"
     echo -e "## swarm worker  join:  $(docker swarm join-token worker | awk 'NR>2{print}' | awk 'NR<2{print}')"
     echo -e "## swarm manager join:  $(docker swarm join-token manager | awk 'NR>2{print}' | awk 'NR<2{print}')"

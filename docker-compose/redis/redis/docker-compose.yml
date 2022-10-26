@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:latest
+    hostname: redis-node
+    networks:
+      - swarm_net
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+    environment:
+      - TZ=Asia/Shanghai
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '2'
+          memory: '4G'
+        reservations:
+          memory: '500M'
+
+volumes:
+  redis:
+    external: false
+networks:
+  swarm_net:
+    driver: overlay
+    external: false

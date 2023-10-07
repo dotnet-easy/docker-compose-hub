@@ -1,0 +1,26 @@
+version: '3.7'
+
+# docker run -d -p 20:20 -p 21:21 -p 21100-21110:21100-21110 -v /my/data/directory:/home/vsftpd -e FTP_USER=user -e FTP_PASS=kQYSPzbKmPLPrg4H -e PASV_MIN_PORT=21100 -e PASV_MAX_PORT=21110 --name vsftpd --restart=always fauria/vsftpd
+
+services: 
+
+  vsftpd:
+    image: fauria/vsftpd:latest
+    container_name: vsftpd
+    restart: always
+    ports:
+      - "21:21"
+      - "20:20"
+      - "21100-21110:21100-21110"
+    environment:
+      - FTP_USER=user
+      - FTP_PASS=kQYSPzbKmPLPrg4H
+      - PASV_MIN_PORT=21100
+      - PASV_MAX_PORT=21110
+      - TZ=Asia/Shanghai
+    volumes: 
+      - vsftpd_data:/home/vsftpd
+
+volumes: 
+  vsftpd_data: 
+  
